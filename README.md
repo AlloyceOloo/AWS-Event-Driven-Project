@@ -1,4 +1,4 @@
-# AWS-Event-Driven-Project
+# AWS-Event-Driven-Project (Part 1)
 * A simple project demonstrating the concept of Event Driven Architecture
 
 ## OUTLINE:
