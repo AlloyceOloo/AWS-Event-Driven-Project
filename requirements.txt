@@ -1,0 +1,55 @@
+Create an S3 bucket for the csv file, for example;
+
+aws s3api create-bucket --bucket b_name --region us-east-1
+
+Manually add the csv files to the S3 bucket from your machine;
+
+aws s3 cp ~/localdirectory/of/csvfiles  s3://b_name
+#b_name is the bucket name, 
+
+Create an SQS queue that will receive the csv rows after processing by the lambda function;
+aws sqs create-queue --queue-name q_name 
+
+Create a Role with the necessary policies to allow the lambda function to read the s3 bucket and send data to a queue;
+(AWS Management Console)
+
+Upload the python code to an S3 bucket, the file must be a .zip;
+aws s3 cp ~/pythonfilename.zip s3://b_name1
+
+After writing the python code to handle the processing, create the lambda function to assume the role;
+aws lambda create-function \
+--function-name f_name \
+--runtime python3.8 \
+--role arn:aws:iam::Account_ID:role/role_name \
+--handler pythonfilename.function_name_in_code \
+--code S3Bucket=b_name,S3Key=b_name1
+
+Configure a trigger for the csv bucket in S3, such that it triggers our lambda function, starting with permissions;
+aws lambda add-permission \
+--function-name f_name \
+--principal s3.amazonaws.com \
+--statement-id s3-invoke \
+--action "lambda:InvokeFunction" \
+--source-arn arn:aws:s3:::b_name \
+--region your-region
+
+Configure the notification;
+aws s3api put-bucket-notification-configuration \
+--bucket b_name \
+--notification-configuration \
+'
+{
+ "LambdaFunctionConfigurations": [
+	{
+	 "Id": "MyLambdaTriggerConfig",
+	 "LambdaFunctionArn": "arn:aws:lambda:your-region:your-account-id:function:your-function-name",
+	 "Events": ["s3:ObjectCreated:*"]
+	}
+	]
+}
+'
+
+Run a test to check the functionality of your lambda function;
+aws lambda invoke --function-name f_name output.txt
+
+
