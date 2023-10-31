@@ -9,6 +9,6 @@
 
 * A separate S3 bucket was used to store the lambda function.
 
-## Setup
+## SETUP
 * Install the AWS python SDK
 * Install and configure AWS CLI
