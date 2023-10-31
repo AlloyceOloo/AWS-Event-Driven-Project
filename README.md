@@ -1,7 +1,7 @@
 # AWS-Event-Driven-Project
 A simple project demonstrating the concept of Event Driven Architecture
 
-Outline
+OUTLINE:
 
 To demonstate event driven architecture, I have a set of csv files, structured to represent housing data on each row.
 
